@@ -8,22 +8,23 @@ RoboRover is a simple simulation of a toy robot on a tabletop, taking commands f
 
 ## Specification
 1. The application **shall** take in commands and output an end state
-2. The tabletop in the application **shall** be square
-3. The tabletop in the application **shall** have defined bounds of 5 units (x-axis) by 5 units (y-axis), where a unit is the movement distance of the robot in a single command
-4. The tabletop in the application **shall** have no obstructions except the robot
-5. Commands that would result in the robot position being outside the tabletop bounds **shall** not be executed
-6. The application **shall** be able to accept the following commands: `PLACE`, `MOVE`, `LEFT`, `RIGHT`, and `REPORT`
-7. On starting the application, all commands **shall** not be executed until a valid `PLACE` command is issued
-7. The `PLACE` command **shall** put the robot on the tabletop in position X,Y and facing `NORTH`, `SOUTH`, `EAST` or `WEST` when the command is issued in the format `PLACE X,Y,F`
-9. The `MOVE` command **shall** move the toy robot one unit forward in the direction it is currently facing
-10. The `LEFT` and `RIGHT` commands **shall** rotate the robot 90 degrees in the specified direction without
+2. Command input **shall** be from a file or from standard input
+3. The tabletop in the application **shall** be square
+4. The tabletop in the application **shall** have defined bounds of 5 units (x-axis) by 5 units (y-axis), where a unit is the movement distance of the robot in a single command
+5. The tabletop in the application **shall** have no obstructions except the robot
+6. Commands that would result in the robot position being outside the tabletop bounds **shall** not be executed
+7. The application **shall** be able to accept the following commands: `PLACE`, `MOVE`, `LEFT`, `RIGHT`, and `REPORT`
+8. On starting the application, all commands **shall** not be executed until a valid `PLACE` command is issued
+9. The `PLACE` command **shall** put the robot on the tabletop in position X,Y and facing `NORTH`, `SOUTH`, `EAST` or `WEST` when the command is issued in the format `PLACE X,Y,F`
+10. The `MOVE` command **shall** move the toy robot one unit forward in the direction it is currently facing
+11. The `LEFT` and `RIGHT` commands **shall** rotate the robot 90 degrees in the specified direction without
 changing the position of the robot
-11. The `REPORT` command **shall** announce the X, Y position of the robot, and the direction it is facing. This can be in any form, but standard
+12. The `REPORT` command **shall** announce the X, Y position of the robot, and the direction it is facing. This can be in any form, but standard
 output is sufficient. 
-12. Command input **shall** be from a file or from standard input
+
 
 # To Run
-Install uv (`>=0.6.14`) by following the [installation instructions](https://docs.astral.sh/uv/getting-started/installation/).
+Install uv version `0.6.14` by following the [installation instructions](https://docs.astral.sh/uv/getting-started/installation/).
 
 Clone the repo, navigate to the terminal path, then run the following command in the terminal:
 
