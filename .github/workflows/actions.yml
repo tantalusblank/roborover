@@ -3,16 +3,16 @@ on: [push]
 jobs:
   check_format:
     name: Check format
-    uses: .github/workflows/common.yml
+    uses: ./.github/workflows/common.yml
     with:
       command: uv run ruff format --check
   lint:
     name: Lint
-    uses: .github/workflows/common.yml
+    uses: ./.github/workflows/common.yml
     with:
       command: uv run ruff check
   test:
     name: Run tests
-    uses: .github/workflows/common.yml
+    uses: ./.github/workflows/common.yml
     with:
       command: uv run pytest tests
