@@ -18,7 +18,7 @@ quote-style = "double"
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["S101", "COM812"]
+ignore = ["S101", "COM812", "G004", "PLR2004", "C901"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
