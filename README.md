@@ -2,6 +2,8 @@
 # RoboRover
 RoboRover is a simple simulation of a toy robot on a tabletop, taking commands from the user to interact with the robot.
 
+<img src="assets/robot_on_table.png" width=250 />
+
 # Requirements
 ## Nomenclature
 - **Shall** requirements must be met for the application to be considered complete.
@@ -29,5 +31,8 @@ Install uv version `0.6.14` by following the [installation instructions](https:/
 Clone the repo, navigate to the terminal path, then run the following command in the terminal:
 
 ```bash
-uv run src/main.py
+uv run roborover.py
 ```
+
+# Architecture
+RoboRover uses the [Command Pattern](https://en.wikipedia.org/wiki/Command_pattern/) to separate command logic from the robot logic. This allows for easy extensibility of commands and testing of commands in isolation.

@@ -1,14 +1,30 @@
 """Tests for the RoboRover application."""
 
+from contextlib import AbstractContextManager
+from unittest import mock
+
 import pytest
 
+from src.main import main
 
-def test_commands_and_output() -> None:
+
+def patch_input(command_list: list[str]) -> AbstractContextManager:
+    """Patch the user input with a list of commands."""
+    return mock.patch("builtins.input", side_effect=command_list)
+
+
+def test_commands_and_output(caplog: pytest.LogCaptureFixture) -> None:
     """Test commands can be sent and an output can be received.
 
-    Verifies requirement #1, #2 in the README
+    PLACE, MOVE, LEFT, RIGHT, and REPORT
+
+    Verifies requirement #1, #2, #7 in the README
     """
-    pytest.fail("Test not yet implemented")
+    with patch_input(
+        ["PLACE 0,0,NORTH", "MOVE", "LEFT", "RIGHT", "REPORT", "HELP", "EXIT"]
+    ):
+        main()
+        assert "0,1,NORTH" in caplog.messages
 
 
 def test_tabletop_dimensions() -> None:
@@ -31,14 +47,6 @@ def test_ignore_commands_out_of_bounds() -> None:
     """Test commands that position the robot out of bounds are not executed.
 
     Verifies requirement #6 in the README
-    """
-    pytest.fail("Test not yet implemented")
-
-
-def test_accepted_commands() -> None:
-    """Test PLACE, MOVE, LEFT, RIGHT, and REPORT commands are accepted.
-
-    Verifies requirement #7 in the README
     """
     pytest.fail("Test not yet implemented")
 
@@ -75,32 +83,52 @@ def test_left_right_commands() -> None:
     pytest.fail("Test not yet implemented")
 
 
-def test_report_command() -> None:
+@pytest.mark.parametrize(
+    ("command_list", "expected_report"),
+    [
+        (
+            [
+                "PLACE 0,0,NORTH",
+                "MOVE",
+                "REPORT",
+            ],
+            "0,0,NORTH",
+        ),
+        (
+            [
+                "PLACE 0,0,NORTH",
+                "LEFT",
+                "REPORT",
+            ],
+            "0,0,WEST",
+        ),
+        (
+            [
+                "PLACE 1,2,EAST",
+                "MOVE",
+                "MOVE",
+                "LEFT",
+                "MOVE",
+                "REPORT",
+            ],
+            "3,3,NORTH",
+        ),
+    ],
+    ids=[
+        "Test Case a)",
+        "Test Case b)",
+        "Test Case c)",
+    ],
+)
+def test_report_command(
+    command_list: list[str],
+    expected_report: str,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     """Test the report command output is correct.
 
     Verifies requirement #12 in the README
     """
-    pytest.fail("Test not yet implemented")
-
-
-"""
-Test Cases
-a)
-PLACE 0,0,NORTH
-MOVE
-REPORT
-Output: 0,1,NORTH
-b)
-PLACE 0,0,NORTH
-LEFT
-REPORT
-Output: 0,0,WEST
-c)
-PLACE 1,2,EAST
-MOVE
-MOVE
-LEFT
-MOVE
-REPORT
-Output: 3,3,NORTH
-"""
+    with patch_input(command_list):
+        main()
+        assert expected_report in caplog.messages
