@@ -54,5 +54,3 @@ jobs:
         with:
           name: coverage report
           path: htmlcov/*
-      - name: Update Coverage Badge
-        uses: we-cli/coverage-badge-action@main

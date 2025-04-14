@@ -1,5 +1,3 @@
-<!-- README.md -->
-[![cov](https://we-cli.github.io/jayin/badges/coverage.svg)](https://github.com/tantalusblank/roborover/actions)
 
 # RoboRover
 RoboRover is a simple simulation of a toy robot on a tabletop, taking commands from the user to interact with the robot.
