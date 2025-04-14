@@ -1,6 +1,4 @@
 name: Pipeline
-env:
-  UV_VERSION: 0.6.14
 on: [push]
 jobs:
   check_format:
@@ -11,7 +9,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          version: "$UV_VERSION"
+          version: "0.6.14"
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -26,7 +24,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          version: $UV_VERSION
+          version: "0.6.14"
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -41,7 +39,7 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
-          version: $UV_VERSION
+          version: "0.6.14"
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
