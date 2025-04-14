@@ -14,6 +14,13 @@ class Direction(Enum):
     WEST = "WEST"
 
 
+class TurnDirection(Enum):
+    """An enumeration of the possible turn directions."""
+
+    LEFT = "LEFT"
+    RIGHT = "RIGHT"
+
+
 @dataclass
 class Pose:
     """A class to represent the position and direction of the robot."""
@@ -35,11 +42,15 @@ class Pose:
         except ValueError:
             return None
 
+    def __str__(self) -> str:
+        """Return a string representation of the Pose."""
+        return f"{self.x_location},{self.y_location},{self.direction.value}"
+
 
 class Tabletop:
     """A class to represent the tabletop where the robot moves."""
 
-    def __init__(self, x_units: int = 5, y_units: int = 5) -> None:
+    def __init__(self, x_units: int = 4, y_units: int = 4) -> None:
         """Initialise the tabletop."""
         self.x_units = x_units
         self.y_units = y_units

@@ -1,10 +1,11 @@
 """Module containing functionality for commands."""
 
 from abc import ABC, abstractmethod
+from logging import Logger
 from typing import Self
 
 from src.robot import Robot
-from src.tabletop import Pose
+from src.tabletop import Pose, TurnDirection
 from src.user_interface import UserInterface
 
 
@@ -33,15 +34,15 @@ class Command(ABC):
                 if not pose:
                     interface.logger.error("Invalid PLACE arguments given")
                     return None
-                command = PlaceCommand(robot, pose)
+                command = PlaceCommand(robot, interface.logger, pose)
             case "MOVE":
-                command = MoveCommand(robot)
+                command = MoveCommand(robot, interface.logger)
             case "LEFT":
-                command = LeftCommand(robot)
+                command = LeftCommand(robot, interface.logger)
             case "RIGHT":
-                command = RightCommand(robot)
+                command = RightCommand(robot, interface.logger)
             case "REPORT":
-                command = ReportCommand(robot)
+                command = ReportCommand(robot, interface.logger)
             case "HELP":
                 command = HelpCommand(interface)
             case "EXIT":
@@ -67,9 +68,10 @@ class Command(ABC):
 class RobotCommand(Command):
     """A base class to represent commands to a robot."""
 
-    def __init__(self, receiver: Robot) -> None:
+    def __init__(self, receiver: Robot, logger: Logger) -> None:
         """Initialise the RobotCommand."""
         self.receiver = receiver
+        self.logger = logger
 
     def execute(self) -> None:
         """Execute the command's action."""
@@ -78,14 +80,14 @@ class RobotCommand(Command):
 class PlaceCommand(RobotCommand):
     """A class to represent place commands."""
 
-    def __init__(self, receiver: Robot, pose: Pose) -> None:
+    def __init__(self, receiver: Robot, logger: Logger, pose: Pose) -> None:
         """Initialise the PlaceCommand."""
-        super().__init__(receiver)
+        super().__init__(receiver, logger)
         self.pose = pose
 
     def execute(self) -> None:
         """Execute the command's action."""
-        self.receiver.place(self.pose)
+        self.receiver.place(self.logger, self.pose)
 
 
 class MoveCommand(RobotCommand):
@@ -93,7 +95,7 @@ class MoveCommand(RobotCommand):
 
     def execute(self) -> None:
         """Execute the command's action."""
-        self.receiver.move_forward()
+        self.receiver.move_forward(self.logger)
 
 
 class LeftCommand(RobotCommand):
@@ -101,7 +103,7 @@ class LeftCommand(RobotCommand):
 
     def execute(self) -> None:
         """Execute the command's action."""
-        self.receiver.turn_left()
+        self.receiver.turn(TurnDirection.LEFT, self.logger)
 
 
 class RightCommand(RobotCommand):
@@ -109,7 +111,7 @@ class RightCommand(RobotCommand):
 
     def execute(self) -> None:
         """Execute the command's action."""
-        self.receiver.turn_right()
+        self.receiver.turn(TurnDirection.RIGHT, self.logger)
 
 
 class ReportCommand(RobotCommand):
@@ -117,7 +119,7 @@ class ReportCommand(RobotCommand):
 
     def execute(self) -> None:
         """Execute the command's action."""
-        self.receiver.report_pose()
+        self.receiver.report_pose(self.logger)
 
 
 class UserInterfaceCommand(Command):
