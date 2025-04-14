@@ -27,6 +27,12 @@ output is sufficient.
 
 
 # To Run
+
+## From Executable (Windows Only)
+Download and run the latest artifact from the build job:
+`roborover.exe`
+
+## From Source
 Install uv version `0.6.14` by following the [installation instructions](https://docs.astral.sh/uv/getting-started/installation/).
 
 Clone the repo, navigate to the terminal path, then run the following command in the terminal:
