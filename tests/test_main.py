@@ -1,6 +1,7 @@
 """Tests for the RoboRover application."""
 
 from contextlib import AbstractContextManager
+from itertools import chain
 from unittest import mock
 
 import pytest
@@ -44,17 +45,67 @@ def test_commands_and_output(caplog: pytest.LogCaptureFixture) -> None:
         assert expected_report_msg in caplog.messages
 
 
+def test_no_obstructions_on_tabletop(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Test the robot can move freely through each unit on the tabletop.
+
+    Places the robot in the SOUTH WEST corner and moves through to the
+    EAST boundary. The robot is then placed 1 unit NORTH of the previous
+    placement position and does the same again, until all units on the
+    tabletop have been moved through.
+
+    The command list and expected log message lists are generated from a range
+    for brevity and scalability, though it makes the test a little more
+    difficult to read. In each case, a list of lists is generated before
+    flattening it to a list of strings.
+
+    Verifies requirement #6 in the README
+    """
+    command_list_of_lists = [
+        [
+            f"PLACE 0,{y_pos},EAST",
+            "MOVE",
+            "MOVE",
+            "MOVE",
+            "MOVE",
+        ]
+        for y_pos in range(5)
+    ]
+    command_list = list(chain.from_iterable(command_list_of_lists))
+
+    expected_log_msg_list_of_lists = [
+        [
+            f"Placed the robot at 0,{y_pos},EAST",
+            "Moving East...",
+            "Moving East...",
+            "Moving East...",
+            "Moving East...",
+        ]
+        for y_pos in range(5)
+    ]
+    expected_log_msgs = list(
+        chain.from_iterable(expected_log_msg_list_of_lists)
+    )
+
+    with patch_input(command_list):
+        main()
+        assert is_msg_sequence_in_logs(caplog.messages, expected_log_msgs)
+
+
 def test_ignore_move_commands_out_of_bounds(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
-    """Test the robot can only move within the tabletop boundary.
+    """Test the move command correctly moves the robot.
 
-    Places the robot in the bottom left corner and tries to move up to the
-    top boundary. It checks that the reported position is the same before and
-    after the failed move command. The robot then turns right, and moves up to
-    the right boundary. This continues until all boundaries are checked.
+    Test the robot can only move within the tabletop boundary.
 
-    Verifies requirements #3, #4, #5, #6, #7 in the README
+    Places the robot in the SOUTH WEST corner and tries to move up to the
+    NORTH boundary. It checks that the reported position is the same before and
+    after the failed move command. The robot then turns right, and moves to
+    the EAST boundary. This continues until all boundaries are checked.
+
+    Verifies requirements #3, #4, #5, #7 in the README
     """
     commands_to_move_along_boundary = [
         "MOVE",
@@ -106,6 +157,37 @@ def test_ignore_move_commands_out_of_bounds(
         assert is_msg_sequence_in_logs(caplog.messages, expected_log_msgs)
 
 
+def test_ignore_place_commands_out_of_bounds(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    """Test the place command correctly places the robot.
+
+    Test the robot can only be placed within the tabletop boundary.
+
+    Verifies requirements #3, #4, #5, #7 in the README
+    """
+    expected_report_msgs = [
+        "Placed the robot at 0,0,NORTH",
+        "Robot cannot be placed off the tabletop",
+        "Robot cannot be placed off the tabletop",
+        "Placed the robot at 4,4,SOUTH",
+        "Robot cannot be placed off the tabletop",
+        "Robot cannot be placed off the tabletop",
+    ]
+    with patch_input(
+        [
+            "PLACE 0,0,NORTH",
+            "PLACE -1,0,NORTH",
+            "PLACE 0,-1,NORTH",
+            "PLACE 4,4,SOUTH",
+            "PLACE 5,4,SOUTH",
+            "PLACE 4,5,SOUTH",
+        ]
+    ):
+        main()
+        assert is_msg_sequence_in_logs(caplog.messages, expected_report_msgs)
+
+
 def test_commands_ignored_before_place(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
@@ -133,33 +215,6 @@ def test_commands_ignored_before_place(
             "REPORT",
             "PLACE 0,0,NORTH",
             "REPORT",
-        ]
-    ):
-        main()
-        assert is_msg_sequence_in_logs(caplog.messages, expected_report_msgs)
-
-
-def test_place_command(caplog: pytest.LogCaptureFixture) -> None:
-    """Test the place command correctly places the robot.
-
-    Verifies requirements #3, #4, #5, #6, #7, #10 in the README
-    """
-    expected_report_msgs = [
-        "Placed the robot at 0,0,NORTH",
-        "Robot cannot be placed off the tabletop",
-        "Robot cannot be placed off the tabletop",
-        "Placed the robot at 4,4,SOUTH",
-        "Robot cannot be placed off the tabletop",
-        "Robot cannot be placed off the tabletop",
-    ]
-    with patch_input(
-        [
-            "PLACE 0,0,NORTH",
-            "PLACE -1,0,NORTH",
-            "PLACE 0,-1,NORTH",
-            "PLACE 4,4,SOUTH",
-            "PLACE 5,4,SOUTH",
-            "PLACE 4,5,SOUTH",
         ]
     ):
         main()
@@ -221,7 +276,7 @@ def test_move_command(
     Places the robot in the NORTH EAST corner and tries to move SOUTH, then
     places again and tries to move WEST.
 
-    Verifies requirement #11 in the README
+    Verifies requirements #5, #11 in the README
     """
     expected_report_msg = f"Robot position is {expected_report}"
     with patch_input(command_list):
