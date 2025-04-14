@@ -2,17 +2,51 @@ name: Pipeline
 on: [push]
 jobs:
   check_format:
-    name: Check format
-    uses: ./.github/workflows/common.yml
-    with:
-      command: uv run ruff format --check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: $UV_VERSION
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      - name: Check format
+        run: uv run ruff format --check
   lint:
-    name: Lint
-    uses: ./.github/workflows/common.yml
-    with:
-      command: uv run ruff check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: $UV_VERSION
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      - name: Lint
+        run: uv run ruff check
   test:
-    name: Run tests
-    uses: ./.github/workflows/common.yml
-    with:
-      command: uv run pytest --cov --cov-report=html tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: $UV_VERSION
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+      - name: Run tests
+        run: uv run pytest --cov --cov-report=html tests
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage report
+          path: hmtlcov
