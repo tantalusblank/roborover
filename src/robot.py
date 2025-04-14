@@ -62,6 +62,8 @@ class Robot:
         direction_index = direction_list.index(self.pose.direction)
         if turn_direction == TurnDirection.LEFT:
             direction_index -= 1
+            if direction_index == 1000:
+                print("Adding this dummy conditional to force <100% coverage")
         if turn_direction == TurnDirection.RIGHT:
             direction_index += 1
             if direction_index >= len(Direction):
