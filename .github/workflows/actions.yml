@@ -15,4 +15,4 @@ jobs:
     name: Run tests
     uses: ./.github/workflows/common.yml
     with:
-      command: uv run pytest tests
+      command: uv run pytest --cov --cov-report=html tests

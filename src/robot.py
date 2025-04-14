@@ -62,8 +62,6 @@ class Robot:
         direction_index = direction_list.index(self.pose.direction)
         if turn_direction == TurnDirection.LEFT:
             direction_index -= 1
-            if direction_index >= len(Direction):
-                direction_index = 4
         if turn_direction == TurnDirection.RIGHT:
             direction_index += 1
             if direction_index >= len(Direction):
