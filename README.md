@@ -13,7 +13,7 @@ RoboRover is a simple simulation of a toy robot on a tabletop, taking commands f
 2. Command input **shall** be from a file or from standard input
 3. The tabletop in the application **shall** be square
 4. The tabletop in the application **shall** have defined bounds of 5 units (x-axis) by 5 units (y-axis), where a unit is the movement distance of the robot in a single command
-5. The `SOUTH` `WEST` corner shall be considered the origin (0,0) of the tabletop
+5. The `SOUTH` `WEST` corner **shall** be considered the origin (0,0) of the tabletop
 6. The tabletop in the application **shall** have no obstructions except the robot
 7. Commands that would result in the robot position being outside the tabletop bounds **shall** not be executed
 8. The application **shall** be able to accept the following commands: `PLACE`, `MOVE`, `LEFT`, `RIGHT`, and `REPORT`
@@ -35,7 +35,7 @@ Download and run the latest artifact from the build job:
 ## From Source
 Install uv version `0.6.14` by following the [installation instructions](https://docs.astral.sh/uv/getting-started/installation/).
 
-Clone the repo, navigate to the terminal path, then run the following command in the terminal:
+Clone the repo, navigate to the project path, then run the following command in the terminal:
 
 ```bash
 uv run roborover.py
