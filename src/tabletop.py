@@ -1,8 +1,9 @@
 """Module containing functionality for the tabletop and positioning on it."""
 
-from dataclasses import dataclass
 from enum import Enum
 from typing import Self
+
+from pydantic.dataclasses import dataclass
 
 
 class Direction(Enum):
@@ -47,10 +48,9 @@ class Pose:
         return f"{self.x_location},{self.y_location},{self.direction.value}"
 
 
+@dataclass
 class Tabletop:
     """A class to represent the tabletop where the robot moves."""
 
-    def __init__(self, x_units: int = 4, y_units: int = 4) -> None:
-        """Initialise the tabletop."""
-        self.x_units = x_units
-        self.y_units = y_units
+    x_units: int = 4
+    y_units: int = 4
